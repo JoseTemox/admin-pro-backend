@@ -1,6 +1,8 @@
 
 const { response } = require('express');
 const bcrypt = require('bcryptjs');
+const { generarJWT } = require('../helpers/jwt');
+
 
 const Usuario = require('../models/usuario')
 
@@ -9,7 +11,8 @@ const getUsuarios = async (req, res) => {
     const usuarios = await  Usuario.find({}, 'nombre email role google');
     res.json({
         ok:true,
-        usuarios
+        usuarios,
+        uid: req.uid
     });
 }
 
@@ -41,13 +44,17 @@ const crearUsuario = async(req, res = response) => {
         const salt = bcrypt.genSaltSync();
         usuario.password = bcrypt.hashSync(password,salt);
 
-
+        
         //grabar usuario en la base de datos
         await usuario.save();
-    
+        
+        //generar el token JWT.
+        const token = await generarJWT(usuario.id);
+        
         res.json({
             ok:true,
-            usuario
+            usuario,
+            token
         });
         
     } catch (error) {
@@ -116,8 +123,42 @@ const actualizarUsuario = async (req, res = response) => {
 
 }
 
+const borrarUsuario = async(req, res = response) => {
+
+    const uid = req.params.id;
+
+    try {
+
+        const usuarioDB = await Usuario.findById(uid);
+        if(!usuarioDB){
+            return res.status(404).json({
+                ok: false,
+                msg: 'No existe un usuario con ese id'
+            });
+        }
+
+        //borrando de la BD
+        await Usuario.findByIdAndDelete(uid);
+
+        res.json({
+            ok:true, 
+            msg: 'Usuario Eliminado'
+        });
+
+        
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            ok:false,
+            msg: 'Comuniquese con el administrador'
+        });
+        
+    }
+}
+
 module.exports = {
     getUsuarios,
     crearUsuario,
-    actualizarUsuario
+    actualizarUsuario,
+    borrarUsuario
 }

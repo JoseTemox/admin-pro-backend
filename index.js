@@ -19,9 +19,11 @@ dbConnection();
 //mean_user
 //7aviNU0XbQaPFkqD
 //138.59.11.239
+
 //rutas
 
 app.use('/api/usuarios', require('./routes/usuarios'));
+app.use('/api/login', require('./routes/auth'));
 
 
 
