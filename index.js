@@ -20,6 +20,13 @@ dbConnection();
 //7aviNU0XbQaPFkqD
 //138.59.11.239
 
+
+
+
+
+//Directorio publico
+app.use( express.static('public'));
+
 //rutas
 
 app.use('/api/usuarios', require('./routes/usuarios'));
