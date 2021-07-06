@@ -22,13 +22,13 @@ const {
 
 const router = Router();
 
-//consulta todos los usuarios
+//consulta todos los hospitals
 router.get('/', getHospitales);
 
 
 
 
-//crear un nuevo usuario
+//crear un nuevo hospital
 router.post('/',
     [
         validarJWT,
@@ -38,16 +38,19 @@ router.post('/',
     crearHospital
 );
 
-//actualizar usuario
+//actualizar hospital
 router.put('/:id', 
     [
-        
+        validarJWT,
+        check('nombre', 'El nombre del hospital es necesario').not().isEmpty(),
+        validarCampos
     ],
     actualizarHospital
 );
 
-    //borrar usuario
+    //borrar hospital
 router.delete('/:id',
+    validarJWT,
     borrarHospital   
 );
 

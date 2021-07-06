@@ -42,7 +42,10 @@
  //actualizar usuario
  router.put('/:id', 
      [
-         
+        validarJWT,
+        check('nombre','el nombre es obligatorio').not().isEmpty(),
+        check('hospital','el hospital debe ser un id valido').isMongoId(),
+        validarCampos
      ],
      actualizarMedico
  );
