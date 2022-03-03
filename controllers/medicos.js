@@ -14,6 +14,30 @@ const getMedicos = async(req, res = response) => {
     })
 }
 
+const getMedicoById = async(req, res = response) => {
+    const id = req.params.id;
+
+    try {
+        const medico = await Medico.findById(id)
+                                        .populate('usuario','nombre img')
+                                        .populate('hospital','nombre img')
+        res.json({
+            ok: true,
+            medico
+        })
+
+    } catch (error) {
+
+        console.log(error);
+        res.json({
+            ok: true,
+            msg: 'Hable con el administrador'
+        })
+    }
+
+
+}
+
 const crearMedico = async(req, res = response) => {
 
     const uid = req.uid;
@@ -29,23 +53,23 @@ const crearMedico = async(req, res = response) => {
             ok: true,
             medico: medicoBD
         })
-        
+
     } catch (error) {
       console.log(error);
       res.status(500).json({
           ok: false,
           msg: 'Hable con el Administrador'
-      })  
+      })
     }
 
-    
+
 }
 
 const actualizarMedico = async(req, res = response) => {
 
     const id = req.params.id;
     const uid = req.uid;
-    
+
 
     try {
 
@@ -82,14 +106,14 @@ const actualizarMedico = async(req, res = response) => {
             ok: false,
             msg: 'hable con el administrador'
         });
-        
+
     }
 }
 
 const borrarMedico = async (req, res = response) => {
 
     const id = req.params.id;
-    
+
 
     try {
 
@@ -104,7 +128,7 @@ const borrarMedico = async (req, res = response) => {
 
         await Medico.findByIdAndDelete(id);
 
-      
+
 
         res.json({
             ok: true,
@@ -124,7 +148,7 @@ const borrarMedico = async (req, res = response) => {
             ok: false,
             msg: 'hable con el administrador'
         });
-        
+
     }
 }
 
@@ -134,5 +158,6 @@ module.exports = {
     getMedicos,
     crearMedico,
     actualizarMedico,
-    borrarMedico
+    borrarMedico,
+    getMedicoById
 }

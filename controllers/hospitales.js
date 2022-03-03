@@ -29,7 +29,7 @@ const crearHospital = async(req, res = response) => {
             ok: true,
             hospital:hospitalDB
         });
-        
+
     } catch (error) {
         console.log(error);
         res.status(500).json({
@@ -38,10 +38,12 @@ const crearHospital = async(req, res = response) => {
         })
     }
 
-   
+
 }
 
 const actualizarHospital = async (req, res = response) => {
+
+    console.log('aqui----------');
 
     const id = req.params.id;
     const uid = req.uid;
@@ -66,13 +68,13 @@ const actualizarHospital = async (req, res = response) => {
 
         const hospitalActualizado = await Hospital.findByIdAndUpdate(id, cambioHospital, {new: true});
 
-        
+
         res.json({
             ok: true,
             hospital: hospitalActualizado
         });
     } catch (error) {
-        
+
         console.log(error);
         res.status(500).json({
             ok: false,
@@ -99,13 +101,13 @@ const borrarHospital = async (req, res = response) => {
        await Hospital.findByIdAndDelete( id );
 
 
-        
+
         res.json({
             ok: true,
             msg: 'Hospital Eliminado'
         });
     } catch (error) {
-        
+
         console.log(error);
         res.status(500).json({
             ok: false,
