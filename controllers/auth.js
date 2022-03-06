@@ -4,7 +4,9 @@ const bcrypt = require('bcryptjs');
 const Usuario = require('../models/usuario');
 const { generarJWT } = require('../helpers/jwt');
 const { googleVerify } = require('../helpers/google-verify');
+// const { googleVerify } = require('../helpers/google-verify');
 const { findById } = require('../models/usuario');
+const { getMenufrontEnd } = require('../helpers/menu-frontend');
 
 const login = async(req, res = response) => {
 
@@ -38,9 +40,10 @@ const login = async(req, res = response) => {
 
         res.json({
             ok: true,
-            token
-        })
-        
+            token,
+            menu: getMenufrontEnd(usuarioDB.role)
+        });
+
     } catch (error) {
         console.log(error);
         res.status(500).json({
@@ -54,7 +57,7 @@ const googleSignIn = async (req, res = response) => {
 
     const googleToken = req.body.token;
 
-    try 
+    try
     {
 
         const { name, email, picture } =  await googleVerify(googleToken);
@@ -87,18 +90,19 @@ const googleSignIn = async (req, res = response) => {
         res.json({
             ok: true,
             msg: 'Google SignIn',
-            token
+            token,
+            menu: getMenufrontEnd(usuario.role)
         });
-        
+
     } catch (error) {
         res.status(401).json({
             ok: false,
             msg: 'Token no es correcto',
         });
-        
+
     }
 
-    
+
 }
 const renewtoken = async (req, res = response) => {
     const uid = req.uid;
@@ -107,12 +111,14 @@ const renewtoken = async (req, res = response) => {
     const token = await generarJWT(uid);
 
     //Obtener el usuario por uid
-    const usuarioDB = await Usuario.findById(uid); 
+    const usuarioDB = await Usuario.findById(uid);
 
     res.json({
         ok: true,
         token,
-        usuarioDB
+        usuarioDB,
+        menu: getMenufrontEnd(usuarioDB.role)
+
     })
 }
 
