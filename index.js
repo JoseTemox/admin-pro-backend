@@ -1,4 +1,5 @@
 require('dotenv').config();
+const path = require('path');
 
 const express = require('express');
 const cors = require('cors')
@@ -35,6 +36,11 @@ app.use('/api/medicos', require('./routes/medicos'));
 app.use('/api/login', require('./routes/auth'));
 app.use('/api/todo', require('./routes/busquedas'));
 app.use('/api/upload', require('./routes/uploads'));
+
+//luego de desplegar agregar esta redireccion de las rutas
+app.use('*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, 'public/index.html'));
+});
 
 
 
